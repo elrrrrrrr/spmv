@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 var pathUtil = require('path');
+var http = require('http');
+
 var fs = require('fs-extra');
 var inquirer = require('inquirer');
 var facade = require('commander');
 
 var pkg = require('./package.json');
+var remote = require('./t.js').remoteVersion;
 // var pokemonList = fs.readdirSync('pokemon');
 
 
@@ -20,13 +23,10 @@ facade
 
 facade
  .version(pkg.version)
- .option('-f, --force', 'processing in force [TODO]')
- .option('-r, --rename', 'rename the pokemon [TODO]')
- .option('-m, --merge', 'merge two pokemon [TODO]')
  .parse(process.argv);
 
 
-function showList(type, cb) {
+function showList(list, cb) {
 
   var isDictionary = function(name) {
     return fs.lstatSync(name).isDirectory();
@@ -37,7 +37,8 @@ function showList(type, cb) {
       type: "list",
       name: "version",
       message: "pick a version",
-      choices: fs.readdirSync(pathUtil.join(__dirname, 'spms'))
+      choices: list
+                  
                   //.concat([ new inquirer.Separator(), 'exit'])
     }
   ], function( answers ) {
@@ -52,22 +53,41 @@ function temp() {
 }
 
 function handlerUse() {
-  showList( 'use', useVersion )
-  
+  var list = fs.readdirSync(pathUtil.join(__dirname, 'spms'));
+  showList(list, useVersion)
 }
 
 function handlerInstall() {
-  showList( 'install', installVersion )
+  var url = 'http://r.cnpmjs.org/spm';
+  remote('http://r.cnpmjs.org/spm', function(err, versions) {
+    if (err) {
+      console.log('Err');
+      return 
+    } else {
+      var list = Object.keys(versions)
+                      .filter( function(e) {
+                        return e.length == 5 && ( e.indexOf('2') == 0 || e.indexOf('3') ==0 );
+                      })
+                      .sort( function (a, b) { return a-b; } );
+      showList(list, installVersion)    
+    }
+  })
+  
 }
 
 function useVersion(name, path) {
   console.log('should use Version', name) 
-  var source = pathUtil.join(__dirname, 'spms', name) + '/index.js'
-  var dist = '/usr/local/bin/' + 'ttt'
+  var source = pathUtil.join(__dirname, 'spms', name) + '/node_modules/.bin/spm';
+  var dist = '/usr/local/bin/' + 'spm'
   fs.remove(dist, function() {
     exec('ln -s ' + source + ' ' + dist )  
   })
-  
+}
+
+function installVersion (name) {
+  console.log('should install ' + name)
+  var perfix = ''
+  exec('npm install spm@' + name + ' --prefix ./spms/'+ name)
 }
 
 function killPoke(name) {
