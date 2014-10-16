@@ -26,6 +26,7 @@ facade
  .version(pkg.version)
  .parse(process.argv);
 
+if (!facade.args.length) facade.help();
 
 function showList(list, cb) {
 
