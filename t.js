@@ -2,7 +2,7 @@ var http = require('http');
 
  function remoteVersion(url, cb) {
   http.get(url, function(res) {
-    console.log('lets go ')
+    console.log('Loading the versions , pls wait a moment ....')
     var data = '';
       res.on('data', function (chunk){
           data += chunk;

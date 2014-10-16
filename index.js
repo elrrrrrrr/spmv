@@ -4,6 +4,7 @@ var http = require('http');
 
 var fs = require('fs-extra');
 var inquirer = require('inquirer');
+var ui = new inquirer.ui.BottomBar();
 var facade = require('commander');
 
 var pkg = require('./package.json');
@@ -78,16 +79,27 @@ function handlerInstall() {
 function useVersion(name, path) {
   console.log('should use Version', name) 
   var source = pathUtil.join(__dirname, 'spms', name) + '/node_modules/.bin/spm';
-  var dist = '/usr/local/bin/' + 'spm'
+  var dist = '/usr/local/bin/' + 'spm';
+
   fs.remove(dist, function() {
-    exec('ln -s ' + source + ' ' + dist )  
+    exec('ln -s ' + source + ' ' + dist)  
   })
 }
 
 function installVersion (name) {
-  console.log('should install ' + name)
-  var perfix = ''
-  exec('npm install spm@' + name + ' --prefix ./spms/'+ name)
+  console.log('should install ' + name);
+  var perfix = '';
+  // function output(error, stdout, stderr) {
+  //   console.log('stdout: ' + stdout);
+  //   console.log('stderr: ' + stderr);
+  //   if (error !== null) {
+  //     console.log('exec error: ' + error);
+  //   }
+  // }
+  var shellInstall = exec('npm install spm@' + name + ' --prefix ./spms/'+ name)
+  shellInstall.stdout.on('data', function (data) {
+    console.log('' + data);
+  });
 }
 
 function killPoke(name) {
