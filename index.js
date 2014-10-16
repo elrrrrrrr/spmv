@@ -79,6 +79,7 @@ function handlerInstall() {
 function useVersion(name, path) {
   console.log('should use Version', name) 
   var source = pathUtil.join(__dirname, 'spms', name) + '/node_modules/.bin/spm';
+  
   var dist = '/usr/local/bin/' + 'spm';
 
   fs.remove(dist, function() {
@@ -88,7 +89,7 @@ function useVersion(name, path) {
 
 function installVersion (name) {
   console.log('should install ' + name);
-  var perfix = '';
+  var installPath = ' ' + pathUtil.join(__dirname, './spms/', name);
   // function output(error, stdout, stderr) {
   //   console.log('stdout: ' + stdout);
   //   console.log('stderr: ' + stderr);
@@ -96,7 +97,7 @@ function installVersion (name) {
   //     console.log('exec error: ' + error);
   //   }
   // }
-  var shellInstall = exec('npm install spm@' + name + ' --prefix ./spms/'+ name)
+  var shellInstall = exec('npm install spm@' + name + installPath);
   shellInstall.stdout.on('data', function (data) {
     console.log('' + data);
   });
