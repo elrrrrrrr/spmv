@@ -67,9 +67,9 @@ function handlerInstall() {
     } else {
       var list = Object.keys(versions)
                       .filter( function(e) {
-                        return e.length == 5 && ( e.indexOf('2') == 0 || e.indexOf('3') ==0 );
+                        return e.length == 5 && 
+                              ( e.indexOf('2') == 0 || e.indexOf('3') ==0 );
                       })
-                      .sort( function (a, b) { return a-b; } );
       showList(list, installVersion)    
     }
   })
@@ -90,7 +90,7 @@ function useVersion(name, path) {
 function installVersion (name) {
   console.log('should install ' + name);
   var installPath = pathUtil.join(__dirname, './spms/', name);
-  fs.mkdirsSync(installPath)
+  fs.ensureDirSync( pathUtil.join(__dirname, 'spms/') );
   var shellInstall = exec('npm install spm@' + name + ' --prefix ' + installPath);
   shellInstall.stdout.on('data', function (data) {
     console.log('' + data);
