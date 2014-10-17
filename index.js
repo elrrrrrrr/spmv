@@ -4,13 +4,11 @@ var http = require('http');
 
 var fs = require('fs-extra');
 var inquirer = require('inquirer');
-var ui = new inquirer.ui.BottomBar();
 var facade = require('commander');
+var exec = require('child_process').exec;
 
 var pkg = require('./package.json');
 var remote = require('./t.js').remoteVersion;
-// var pokemonList = fs.readdirSync('pokemon');
-
 
 // primary comamnd , support type pokemon directly . [TODO]
 facade
@@ -21,12 +19,13 @@ facade
   .command('use')
   .description('release a pokemon')
   .action(handlerUse)
-
 facade
- .version(pkg.version)
- .parse(process.argv);
+  .version(pkg.version);
+
+facade.parse(process.argv);
 
 if (!facade.args.length) facade.help();
+
 
 function showList(list, cb) {
 
@@ -91,35 +90,16 @@ function useVersion(name, path) {
 function installVersion (name) {
   console.log('should install ' + name);
   var installPath = pathUtil.join(__dirname, './spms/', name);
-  // function output(error, stdout, stderr) {
-  //   console.log('stdout: ' + stdout);
-  //   console.log('stderr: ' + stderr);
-  //   if (error !== null) {
-  //     console.log('exec error: ' + error);
-  //   }
-  // }
+  fs.mkdirsSync(installPath)
   var shellInstall = exec('npm install spm@' + name + ' --prefix ' + installPath);
   shellInstall.stdout.on('data', function (data) {
     console.log('' + data);
   });
+  shellInstall.stderr.on('data', function (data) {
+    console.log('' + data);
+  });
 }
 
-function killPoke(name) {
-
-}
-
-function listPoke(name) {
-
-}
-
-var exec = require('child_process').exec;
-
-function puts(error, stdout, stderr) { sys.puts(stdout) }
 
 
-// exec("ls -la", function(err, stdout, stderr) {
-//   if (err) {
-//     return console.log(stderr)
-//   }
-//   console.log(stdout)
-// });
+

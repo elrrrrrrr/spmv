@@ -1,6 +1,6 @@
 {
   "name": "spmv",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "spm version manager",
   "bin": "index.js",
   "scripts": {
