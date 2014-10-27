@@ -1,5 +1,6 @@
 spmv
 ====
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/elrrrrrrr/spmv?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 > 解决spm多个版本之间的平滑切换
 
 ##安装
